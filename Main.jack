@@ -18,6 +18,14 @@ class Main {
         let zyy = 0;
         let zxy = 0;
         let continue = true;
+        do Output.moveCursor(16,0);
+        do Output.printInt(j);
+        do Output.printString(",");
+        do Output.printInt(k);
+        do Output.printString("-");
+        do Output.printInt(ca);
+        do Output.printString(",");
+        do Output.printInt(cb);
         while (continue = true) {
           let count = count + 1;
           let zxx = zx * zx;
@@ -26,15 +34,21 @@ class Main {
           let zxy = zx * zy;
           let zy = (2 * zxy) + cb;
           let zx = xtemp + ca;
-          if (count > 99) {
+          if (count > 4) {
             let continue = false;
           } else {
             if ((zxx + zyy) > 4) {
               let continue = false;
             }
           }
+          do Output.moveCursor(16+count,0);
+          do Output.printInt(count);
+          do Output.printString(":");
+          do Output.printInt(zxx);
+          do Output.printString(":");
+          do Output.printInt(zyy);
         }
-        if (count > 99) {
+        if (count > 4) {
           do Screen.setColor(false);
         } else {
           do Screen.setColor(true);
