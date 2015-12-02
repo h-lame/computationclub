@@ -2,9 +2,9 @@ class Main {
   function void main() {
     var int acorn, bcorn, size, j, k, count, ca, cb, zx, zy, zxx, zyy, zxy, xtemp;
     var boolean continue;
-    let acorn = 0;
-    let bcorn = 0;
-    let size = 150;
+    let acorn = -2;
+    let bcorn = -1;
+    let size = 3;
     let j = 1;
     while (j < 151) {
       let k = 1;
