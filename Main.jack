@@ -1,6 +1,7 @@
 class Main {
   function void main() {
     var int acorn, bcorn, size, j, k, count, ca, cb, zx, zy, zxx, zyy, zxy, xtemp;
+    var boolean continue;
     let acorn = 0;
     let bcorn = 0;
     let size = 150;
@@ -16,7 +17,8 @@ class Main {
         let zxx = 0;
         let zyy = 0;
         let zxy = 0;
-        while ((count > 100) | ((zxx + zyy) > 4)) {
+        let continue = true;
+        while (continue = true) {
           let count = count + 1;
           let zxx = zx * zx;
           let zyy = zy * zy;
@@ -24,8 +26,15 @@ class Main {
           let zxy = zx * zy;
           let zy = (2 * zxy) + cb;
           let zx = xtemp + ca;
+          if (count > 99) {
+            let continue = false;
+          } else {
+            if ((zxx + zyy) > 4) {
+              let continue = false;
+            }
+          }
         }
-        if (count > 100) {
+        if (count > 99) {
           do Screen.setColor(false);
         } else {
           do Screen.setColor(true);
