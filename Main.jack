@@ -1,0 +1,33 @@
+class Main {
+  function void main() {
+    var int acorn, bcorn, size, j, k, count, ca, cb, zx, zy, xtemp;
+    let acorn = 0;
+    let bcorn = 0;
+    let size = 150;
+    let j = 1;
+    while (j < 151) {
+      let k = 1;
+      while (k < 151) {
+        let count = 0;
+        let ca = acorn + ((j * size) / 150);
+        let cb = bcorn + ((k * size) / 150);
+        let zx = 0;
+        let zy = 0;
+        while ((count < 100) | ((zx*zx) + (zy*zy) > 4)) {
+          let count = count + 1;
+          let xtemp = (zx * zx) - (zy * zy);
+          let zy = (2 * zx * zy) + cb;
+          let zx = xtemp + ca;
+        }
+        if (count > 100) {
+          do Screen.setColor(false);
+        } else {
+          do Screen.setColor(true);
+        }
+        do Screen.drawPixel(j,k);
+        let k = k + 1;
+      }
+      let j = j + 1;
+    }
+  }
+}
