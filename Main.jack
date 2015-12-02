@@ -1,6 +1,6 @@
 class Main {
   function void main() {
-    var int acorn, bcorn, size, j, k, count, ca, cb, zx, zy, xtemp;
+    var int acorn, bcorn, size, j, k, count, ca, cb, zx, zy, zxx, zyy, zxy, xtemp;
     let acorn = 0;
     let bcorn = 0;
     let size = 150;
@@ -13,10 +13,16 @@ class Main {
         let cb = bcorn + ((k * size) / 150);
         let zx = 0;
         let zy = 0;
-        while ((count < 100) | ((zx*zx) + (zy*zy) > 4)) {
+        let zxx = 0;
+        let zyy = 0;
+        let zxy = 0;
+        while ((count > 100) | ((zxx + zyy) > 4)) {
           let count = count + 1;
-          let xtemp = (zx * zx) - (zy * zy);
-          let zy = (2 * zx * zy) + cb;
+          let zxx = zx * zx;
+          let zyy = zy * zy;
+          let xtemp = zxx - zyy;
+          let zxy = zx * zy;
+          let zy = (2 * zxy) + cb;
           let zx = xtemp + ca;
         }
         if (count > 100) {
