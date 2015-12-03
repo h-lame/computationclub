@@ -62,8 +62,8 @@ class Bumps < Genus
     @bit_count = 8
   end
 
-  def make_from(pixels)
-    xy_pixels = pixels.transpose.reverse
+  def make_from(pixels, iterations)
+    xy_pixels = scale_pixels_to_bit_count(pixels, iterations).transpose.reverse
     pixel_count = pixels.flatten.size
     width = xy_pixels.size
     height = xy_pixels.first.size
@@ -82,6 +82,14 @@ class Bumps < Genus
   protected
   def genus_extension
     'bmp'
+  end
+
+  def scale_pixels_to_bit_count(pixels, iterations)
+    pixels.map do |row|
+      row.map do |cell|
+        colour_count - (((colour_count-1) * cell) / iterations)
+      end
+    end
   end
 
   def colour_table_size

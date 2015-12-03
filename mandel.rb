@@ -70,7 +70,7 @@ end
 if options[:bmp]
   require './bumps'
 
-  Bumps.new.make_from(pixels)
+  Bumps.new.make_from(pixels, iterations)
 else
   PIXEL_DATA = ['.','-','/','|','<','{','%','&','@','#',' ']
   pixel_for_count = ->(x) { PIXEL_DATA[(((PIXEL_DATA.size-1) * x) / iterations)] }
