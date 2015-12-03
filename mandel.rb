@@ -2,7 +2,7 @@
 
 require 'optparse'
 
-options = { complex: false, width: 600, height: 600, acorn: -2, bcorn: -2, size: 4, iterations: 100 }
+options = { complex: false, width: 600, height: 600, acorn: -2, bcorn: -2, size: 4, iterations: 100, bmp: false }
 OptionParser.new do |opts|
   opts.banner = "Usage: mandel.rb [options]"
 
@@ -13,6 +13,7 @@ OptionParser.new do |opts|
   opts.on("-bBCORN", "Mandelbrot viewport top right corner y") { |b| options[:bcorn] = Float(b) }
   opts.on("-sSIZE", "Mandelbrot viewport size") { |s| options[:size] = Float(s) }
   opts.on("-iITERATIONS", "Mandelbrot iterations") { |i| options[:iterations] = Integer(i) }
+  opts.on("-p", "Output BMP") { options[:bmp] = true }
 
 end.parse!
 
@@ -66,7 +67,13 @@ pixels = []
   end
 end
 
-PIXEL_DATA = ['.','-','/','|','<','{','%','&','@','#',' ']
-pixel_for_count = ->(x) { PIXEL_DATA[(((PIXEL_DATA.size-1) * x) / iterations)] }
+if options[:bmp]
+  require './bumps'
 
-puts pixels.transpose.map { |r| r.map { |c| pixel_for_count[c] }.join }.join("\n")
+  Bumps.new.make_from(pixels)
+else
+  PIXEL_DATA = ['.','-','/','|','<','{','%','&','@','#',' ']
+  pixel_for_count = ->(x) { PIXEL_DATA[(((PIXEL_DATA.size-1) * x) / iterations)] }
+
+  puts pixels.transpose.map { |r| r.map { |c| pixel_for_count[c] }.join }.join("\n")
+end
