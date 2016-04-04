@@ -10,9 +10,12 @@
     var width = Math.round(canvas.width * (scaler.value / 100));
     var height = Math.round(canvas.height * (scaler.value / 100));
 
-    var world = new World(width, height, function(x,y) {
-      return new Cell(Math.round(Math.random()));
-    });
+    this.newWorld = function() {
+      return new World(width, height, function(x,y) {
+        return new Cell(Math.round(Math.random()));
+      });
+    }
+    var world = self.newWorld();
 
     var view = new View(context, (scaler.value / 100));
 
@@ -56,6 +59,7 @@
     var generation = args.generation;
     var autoRun = args.autoRun;
     var nextGeneration = args.nextGeneration;
+    var reset = args.reset;
 
     this.updateDetails = function(world) {
       population.innerHTML = world.population;
@@ -69,6 +73,12 @@
       if (!self.run()) {
         game.tick();
       }
+    };
+    reset.onclick = function() {
+      game.newWorld();
+      population.innerHTML = '0';
+      generation.innerHTML = '0';
+      game.tick();
     };
   };
 

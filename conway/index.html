@@ -11,13 +11,14 @@
 
     <canvas width="980" height="540" id="world"></canvas>
 
-    <div ic="controls">
+    <div id="controls">
       <label for="scale">Scale</label>
       <input type="range" id="scaler" min="1" value="100" max="100" step="1">
       <label for="runstate">
         <input type="checkbox" id="autorun" checked="checked"> Auto-run?
       </label>
       <button id="tick">Next generation</button>
+      <button id="reset">Start again</button>
       <h2>Generation</h2>
       <p id="generation">0</p>
       <h2>Population</h2>
@@ -25,19 +26,14 @@
     </div>
 
     <script>
-      var canvas = document.getElementById("world");
-      var scaler = document.getElementById("scaler");
-      var generation = document.getElementById("generation");
-      var population = document.getElementById("population");
-      var autoRun = document.getElementById("autorun");
-      var nextGeneration = document.getElementById("tick");
       var conway = new Conway({
-        canvas: canvas,
-        scaler: scaler,
-        generation: generation,
-        population: population,
-        autoRun: autoRun,
-        nextGeneration: nextGeneration
+        canvas: document.getElementById("world"),
+        scaler: document.getElementById("scaler"),
+        generation: document.getElementById("generation"),
+        population: document.getElementById("population"),
+        autoRun: document.getElementById("autorun"),
+        nextGeneration: document.getElementById("tick"),
+        reset: document.getElementById("reset")
       });
       conway.run();
     </script>
