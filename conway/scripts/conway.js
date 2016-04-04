@@ -1,21 +1,24 @@
 (function(){
   var Conway = function(args) {
-    var self = this;
-    var scaler = args.scaler;
-    var canvas = args.canvas;
-    var context = canvas.getContext("2d");
+    var self = this,
+      scaler = args.scaler,
+      canvas = args.canvas,
+      context = canvas.getContext("2d"),
+      ui = new UI(self, (scaler.value / 100), args);
 
-    var ui = new UI(self, args);
+    this.newWorld = function(clear) {
+      var width = Math.round(canvas.width * (scaler.value / 100));
+      var height = Math.round(canvas.height * (scaler.value / 100));
 
-    var width = Math.round(canvas.width * (scaler.value / 100));
-    var height = Math.round(canvas.height * (scaler.value / 100));
-
-    this.newWorld = function() {
-      return new World(width, height, function(x,y) {
-        return new Cell(Math.round(Math.random()));
-      });
-    }
-    var world = self.newWorld();
+      var callback;
+      if (clear === false) {
+        callback = function(x,y) {
+          return new Cell(Math.round(Math.random()));
+        };
+      }
+      this.world = new World(width, height, callback);
+    };
+    self.newWorld(false);
 
     var view = new View(context, (scaler.value / 100));
 
@@ -23,9 +26,9 @@
       var scale = (scaler.value / 100);
       var newWidth = Math.round(canvas.width * scale);
       var newHeight = Math.round(canvas.height * scale);
-      var oldWorld = world;
-      world = oldWorld.newGeneration(newWidth, newHeight);
-      render(world, scale);
+      var oldWorld = this.world;
+      this.world = oldWorld.newGeneration(newWidth, newHeight);
+      this.render(scale);
     };
 
     self.run = function() {
@@ -36,9 +39,10 @@
       }, 100);
     };
 
-    var render = function(world, scale) {
+    this.render = function(scale) {
       view.setScale(scale);
-      world.cells.forEach(function(row, y, _a) {
+      ui.setScale(scale);
+      this.world.cells.forEach(function(row, y, _a) {
         row.forEach(function(cell, x, _a) {
           if (cell.state === 0) {
             view.setPixel(x, y, { r: 255, g: 255, b: 255 });
@@ -53,13 +57,16 @@
     };
   };
 
-  var UI = function(game, args) {
+  var UI = function(game, scale, args) {
     var self = this;
     var population = args.population;
     var generation = args.generation;
     var autoRun = args.autoRun;
     var nextGeneration = args.nextGeneration;
     var reset = args.reset;
+    var clear = args.clear;
+    var canvas = args.canvas;
+    this.scale = scale;
 
     this.updateDetails = function(world) {
       population.innerHTML = world.population;
@@ -68,6 +75,9 @@
     this.run = function() {
       return autoRun.checked;
     };
+    this.setScale = function(newScale) {
+      self.scale = newScale;
+    };
 
     nextGeneration.onclick = function() {
       if (!self.run()) {
@@ -75,11 +85,37 @@
       }
     };
     reset.onclick = function() {
-      game.newWorld();
+      game.newWorld(false);
       population.innerHTML = '0';
       generation.innerHTML = '0';
       game.tick();
     };
+    clear.onclick = function() {
+      game.newWorld(true);
+      population.innerHTML = '0';
+      generation.innerHTML = '0';
+      game.tick();
+    }
+    var draw = false;
+    canvas.onmousedown = function() {
+      draw = true;
+    }
+    canvas.onmousemove = function(e) {
+      if (draw) {
+        var canvasx = canvas.offsetLeft,
+          canvasy = canvas.offsetTop;
+          mousex = parseInt(e.clientX-canvasx),
+          mousey = parseInt(e.clientY-canvasy);
+
+          cellx = Math.round(mousex * self.scale);
+          celly = Math.round(mousey * self.scale);
+        game.world.cellAt(cellx, celly).state = 1;
+      };
+      game.render(self.scale);
+    }
+    canvas.onmouseup = function(e) {
+      draw = false;
+    }
   };
 
   var World = function(x,y,callback) {
@@ -195,7 +231,7 @@
       }
 
       context.putImageData(imageData, 0, 0);
-      context.drawImage(context.canvas, 0, 0, self.width, self.height, 0, 0, self.context.canvas.width, self.context.canvas.height)
+      context.drawImage(context.canvas, 0, 0, self.width, self.height, 0, 0, self.context.canvas.width, self.context.canvas.height);
     };
   };
 

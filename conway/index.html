@@ -14,11 +14,12 @@
     <div id="controls">
       <label for="scale">Scale</label>
       <input type="range" id="scaler" min="1" value="100" max="100" step="1">
-      <label for="runstate">
+      <label for="autorun">
         <input type="checkbox" id="autorun" checked="checked"> Auto-run?
       </label>
       <button id="tick">Next generation</button>
       <button id="reset">Start again</button>
+      <button id="clear">Clear</button>
       <h2>Generation</h2>
       <p id="generation">0</p>
       <h2>Population</h2>
@@ -33,7 +34,8 @@
         population: document.getElementById("population"),
         autoRun: document.getElementById("autorun"),
         nextGeneration: document.getElementById("tick"),
-        reset: document.getElementById("reset")
+        reset: document.getElementById("reset"),
+        clear: document.getElementById("clear")
       });
       conway.run();
     </script>
