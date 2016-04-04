@@ -1,7 +1,14 @@
+(function(){
   var Conway = function(args) {
     var self = this;
     var scaler = args.scaler;
     var canvas = args.canvas;
+    var context = canvas.getContext("2d");
+
+    var population = args.population;
+    var generation = args.generation;
+    var autoRun = args.autoRun;
+    var nextGeneration = args.nextGeneration;
 
     var width = Math.round(canvas.width * (scaler.value / 100));
     var height = Math.round(canvas.height * (scaler.value / 100));
@@ -10,16 +17,37 @@
       return new Cell(Math.round(Math.random()));
     });
 
-    self.run = function () {
-      setInterval(function () {
-        var newWidth = Math.round(canvas.width * (scaler.value / 100));
-        var newHeight = Math.round(canvas.height * (scaler.value / 100));
-        world = world.newGeneration(newWidth, newHeight);
-        render(world, new View(canvas, scaler.value));
-      }, 100);
+    var view = new View(context, (scaler.value / 100));
+
+    self.tick = function () {
+      var scale = (scaler.value / 100);
+      var newWidth = Math.round(canvas.width * scale);
+      var newHeight = Math.round(canvas.height * scale);
+      var oldWorld = world;
+      world = oldWorld.newGeneration(newWidth, newHeight);
+      render(world, scale);
     };
 
-    var render = function(world, view) {
+    self.run = function () {
+      setInterval(function () {
+        if (autoRun.checked) {
+          self.tick();
+        }
+      }, 100);
+    };
+    args.nextGeneration.onclick = function() {
+      if (!autoRun.checked) {
+        self.tick();
+      }
+    };
+
+    var renderDetails = function(world) {
+      population.innerHTML = world.population;
+      generation.innerHTML = parseInt(generation.innerHTML) + 1;
+    };
+
+    var render = function(world, scale) {
+      view.setScale(scale);
       world.cells.forEach(function(row, y, _a) {
         row.forEach(function(cell, x, _a) {
           if (cell.state === 0) {
@@ -31,13 +59,15 @@
       });
 
       view.render();
-    }
+      renderDetails(world);
+    };
   };
 
   var World = function(x,y,callback) {
     var self = this;
     this.width = x;
     this.height = y;
+    this.population = 0;
 
     this.buildWorld = function(callback) {
       var cells = new Array(self.height);
@@ -51,13 +81,16 @@
             cell = new Cell(0);
           }
           row[x] = cell;
+          if (cell.state !== 0) {
+            self.population += 1;
+          }
         };
         cells[y] = row;
       };
       return cells;
     };
 
-    this.cells = this.buildWorld(callback);
+    this.cells = self.buildWorld(callback);
 
     this.newGeneration = function(width, height) {
       return new World(width, height, function(x,y) {
@@ -88,7 +121,7 @@
   var Cell = function(state) {
     var self = this;
     this.state = state;
-    this.evolve = function (neighbourhood) {
+    this.evolve = function(neighbourhood) {
       var neighbours = 0;
       neighbourhood.forEach(function(cell, _i, _a) {
         if (cell.state === 1) {
@@ -111,36 +144,43 @@
     }
   };
 
-  var View = function (canvas, scale) {
+  var View = function(context, scale) {
     var self = this;
-    var width = Math.round(canvas.width * (scale / 100));
-    var height = Math.round(canvas.height * (scale / 100));
-    var context = canvas.getContext("2d");
-    var data = new Array(width * height * 4);
+    this.context = context;
 
-    self.setPixel = function (x, y, color) {
-      if (x < 0 || x >= width || y < 0 || y > height) {
+    this.setScale = function(newScale) {
+      self.scale = newScale;
+      self.width = Math.round(context.canvas.width * self.scale);
+      self.height = Math.round(context.canvas.height * self.scale);
+    }
+    self.setScale(scale);
+    var data = new Array(self.width * self.height * 4);
+
+    this.setPixel = function(x, y, color) {
+      if (x < 0 || x >= self.width || y < 0 || y > self.height) {
         throw new Error("Out of bounds (" + x + ", " + y + ")");
       }
 
-      data[(y * width + x) * 4 + 0] = color.r;
-      data[(y * width + x) * 4 + 1] = color.g;
-      data[(y * width + x) * 4 + 2] = color.b;
-      data[(y * width + x) * 4 + 3] = 255;
+      data[(y * self.width + x) * 4 + 0] = color.r;
+      data[(y * self.width + x) * 4 + 1] = color.g;
+      data[(y * self.width + x) * 4 + 2] = color.b;
+      data[(y * self.width + x) * 4 + 3] = 255;
     };
 
-    self.render = function () {
-      var imageData = context.createImageData(width, height);
+    this.render = function() {
+      var imageData = self.context.createImageData(self.width, self.height);
 
-      for (var i = 0; i < data.length; i += 1) {
+      var howMuchData = self.width * self.height * 4;
+      for (var i = 0; i < howMuchData; i += 1) {
         imageData.data[i] = data[i];
       }
 
-      context.putImageData(imageData, 0, 0, 0, 0, context.canvas.width, context.canvas.height);
-      context.drawImage(context.canvas, 0, 0, width, height, 0, 0, context.canvas.width, context.canvas.height)
+      context.putImageData(imageData, 0, 0);
+      context.drawImage(context.canvas, 0, 0, self.width, self.height, 0, 0, self.context.canvas.width, self.context.canvas.height)
     };
   };
 
   if (typeof window !== "undefined") {
     window.Conway = Conway;
-  }
+  };
+})();
