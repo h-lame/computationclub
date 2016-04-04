@@ -5,10 +5,7 @@
     var canvas = args.canvas;
     var context = canvas.getContext("2d");
 
-    var population = args.population;
-    var generation = args.generation;
-    var autoRun = args.autoRun;
-    var nextGeneration = args.nextGeneration;
+    var ui = new UI(self, args);
 
     var width = Math.round(canvas.width * (scaler.value / 100));
     var height = Math.round(canvas.height * (scaler.value / 100));
@@ -19,7 +16,7 @@
 
     var view = new View(context, (scaler.value / 100));
 
-    self.tick = function () {
+    this.tick = function() {
       var scale = (scaler.value / 100);
       var newWidth = Math.round(canvas.width * scale);
       var newHeight = Math.round(canvas.height * scale);
@@ -28,22 +25,12 @@
       render(world, scale);
     };
 
-    self.run = function () {
-      setInterval(function () {
-        if (autoRun.checked) {
+    self.run = function() {
+      setInterval(function() {
+        if (ui.run()) {
           self.tick();
         }
       }, 100);
-    };
-    args.nextGeneration.onclick = function() {
-      if (!autoRun.checked) {
-        self.tick();
-      }
-    };
-
-    var renderDetails = function(world) {
-      population.innerHTML = world.population;
-      generation.innerHTML = parseInt(generation.innerHTML) + 1;
     };
 
     var render = function(world, scale) {
@@ -59,7 +46,29 @@
       });
 
       view.render();
-      renderDetails(world);
+      ui.updateDetails(world);
+    };
+  };
+
+  var UI = function(game, args) {
+    var self = this;
+    var population = args.population;
+    var generation = args.generation;
+    var autoRun = args.autoRun;
+    var nextGeneration = args.nextGeneration;
+
+    this.updateDetails = function(world) {
+      population.innerHTML = world.population;
+      generation.innerHTML = parseInt(generation.innerHTML) + 1;
+    };
+    this.run = function() {
+      return autoRun.checked;
+    };
+
+    nextGeneration.onclick = function() {
+      if (!self.run()) {
+        game.tick();
+      }
     };
   };
 
