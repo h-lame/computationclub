@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Cellular Automata : Conway's Game of Life</title>
+    <link rel="stylesheet" href="./styles/conway.css">
+    <script src="./scripts/conway.js"></script>
+  </head>
+  <body>
+    <h1>Conway's Game of Life</h1>
+
+    <canvas width="980" height="540" id="world"></canvas>
+
+    <label for="scale">Scale</label>
+    <input type="range" id="scaler" min="1" value="100" max="100" step="1">
+
+    <script>
+      var canvas = document.getElementById("world");
+      var scaler = document.getElementById("scaler");
+      var conway = new Conway({
+        canvas: canvas,
+        scaler: scaler
+      });
+      conway.run();
+    </script>
+  </body>
+</html>
