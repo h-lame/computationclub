@@ -1,14 +1,14 @@
 (function(){
   var Conway = function(args) {
     var self = this,
-      scaler = args.scaler,
+      scaler = new Scaler(args.scaler),
       canvas = args.canvas,
-      context = canvas.getContext("2d"),
-      ui = new UI(self, (scaler.value / 100), args);
+      context = canvas.getContext("2d");
 
+    this.scale = scaler.currentScale();
     this.newWorld = function(clear) {
-      var width = Math.round(canvas.width * (scaler.value / 100));
-      var height = Math.round(canvas.height * (scaler.value / 100));
+      var width = Math.round(canvas.width * self.scale);
+      var height = Math.round(canvas.height * self.scale);
 
       var callback;
       if (clear === false) {
@@ -20,15 +20,24 @@
     };
     self.newWorld(false);
 
-    var view = new View(context, (scaler.value / 100));
+    var view = new View(context, scaler.currentScale());
+    scaler.listenForScaleChanges(view);
+
+    var ui = new UI(self, args);
+    scaler.listenForScaleChanges(ui);
+
+    this.onscalechange = function(newScale) {
+      self.scale = newScale;
+      var newWidth = Math.round(canvas.width * self.scale);
+      var newHeight = Math.round(canvas.height * self.scale);
+      self.world = self.world.resize(newWidth, newHeight);
+      self.render();
+    }
+    scaler.listenForScaleChanges(self);
 
     this.tick = function() {
-      var scale = (scaler.value / 100);
-      var newWidth = Math.round(canvas.width * scale);
-      var newHeight = Math.round(canvas.height * scale);
-      var oldWorld = this.world;
-      this.world = oldWorld.newGeneration(newWidth, newHeight);
-      this.render(scale);
+      self.world = self.world.newGeneration();
+      self.render();
     };
 
     self.run = function() {
@@ -39,9 +48,7 @@
       }, 100);
     };
 
-    this.render = function(scale) {
-      view.setScale(scale);
-      ui.setScale(scale);
+    this.render = function() {
       this.world.cells.forEach(function(row, y, _a) {
         row.forEach(function(cell, x, _a) {
           if (cell.state === 0) {
@@ -57,7 +64,25 @@
     };
   };
 
-  var UI = function(game, scale, args) {
+  var Scaler = function(control) {
+    var self = this,
+      control = control,
+      scalables = [];
+
+    this.listenForScaleChanges = function(newScalable) {
+      scalables.push(newScalable);
+    }
+    control.onchange = function() {
+      scalables.forEach(function(scalable) {
+        scalable.onscalechange(self.currentScale());
+      });
+    };
+    this.currentScale = function() {
+      return (control.value / 100);
+    };
+  }
+
+  var UI = function(game, args) {
     var self = this;
     var population = args.population;
     var generation = args.generation;
@@ -66,7 +91,6 @@
     var reset = args.reset;
     var clear = args.clear;
     var canvas = args.canvas;
-    this.scale = scale;
 
     this.updateDetails = function(world) {
       population.innerHTML = world.population;
@@ -75,7 +99,7 @@
     this.run = function() {
       return autoRun.checked;
     };
-    this.setScale = function(newScale) {
+    this.onscalechange = function(newScale) {
       self.scale = newScale;
     };
 
@@ -88,13 +112,13 @@
       game.newWorld(false);
       population.innerHTML = '0';
       generation.innerHTML = '0';
-      game.tick();
+      game.render();
     };
     clear.onclick = function() {
       game.newWorld(true);
       population.innerHTML = '0';
       generation.innerHTML = '0';
-      game.tick();
+      game.render();
     }
     var draw = false;
     canvas.onmousedown = function() {
@@ -111,7 +135,7 @@
           celly = Math.round(mousey * self.scale);
         game.world.cellAt(cellx, celly).state = 1;
       };
-      game.render(self.scale);
+      game.render();
     }
     canvas.onmouseup = function(e) {
       draw = false;
@@ -147,11 +171,16 @@
 
     this.cells = self.buildWorld(callback);
 
-    this.newGeneration = function(width, height) {
-      return new World(width, height, function(x,y) {
+    this.newGeneration = function() {
+      return new World(self.width, self.height, function(x,y) {
         return self.cellAt(x, y).evolve(self.neighbourhood(x,y));
       });
     };
+    this.resize = function(width, height) {
+      return new World(width, height, function(x,y) {
+        return new Cell(self.cellAt(x, y).state);
+      });
+    }
 
     this.cellAt = function(x,y) {
       return (self.cells[y] || [])[x] || new Cell(0);
@@ -203,12 +232,12 @@
     var self = this;
     this.context = context;
 
-    this.setScale = function(newScale) {
+    this.onscalechange = function(newScale) {
       self.scale = newScale;
       self.width = Math.round(context.canvas.width * self.scale);
       self.height = Math.round(context.canvas.height * self.scale);
     }
-    self.setScale(scale);
+    self.onscalechange(scale);
     var data = new Array(self.width * self.height * 4);
 
     this.setPixel = function(x, y, color) {
