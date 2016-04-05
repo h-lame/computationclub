@@ -60,7 +60,7 @@
       });
 
       view.render();
-      ui.updateDetails(world);
+      ui.updateDetails(this.world);
     };
   };
 
