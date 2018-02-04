@@ -1,3 +1,5 @@
+# Lua - Day 2
+
 Table constructor for non string values, or for strings that don't conform to
 method name rules is to use `[]`.
 
