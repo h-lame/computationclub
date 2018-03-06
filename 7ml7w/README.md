@@ -13,3 +13,5 @@ in seven weeks](https://pragprog.com/book/7lang/seven-more-languages-in-seven-we
 * Factor
   * [Day 1](./factor/day_1) - [notes](./factor/day_1/notes,md) and the
     exercises.
+  * [Day 2](./factor/day_2) - [notes](./factor/day_2/notes,md) and the
+    examples / exercises described in the chapter.
