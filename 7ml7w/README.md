@@ -17,3 +17,6 @@ in seven weeks](https://pragprog.com/book/7lang/seven-more-languages-in-seven-we
     examples / exercises described in the chapter.
   * [Day 3](./factor/day_3) - [notes](./factor/day_3/notes,md) and the
     examples described in the chapter (I didn't do the exercises (yet)).
+* Elm
+  * [Day 1](./elm/day_1) - [notes](./elm/day_1/notes,md) only, no exercises
+    (yet)
