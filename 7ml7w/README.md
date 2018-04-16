@@ -20,3 +20,7 @@ in seven weeks](https://pragprog.com/book/7lang/seven-more-languages-in-seven-we
 * Elm
   * [Day 1](./elm/day_1) - [notes](./elm/day_1/notes,md) only, no exercises
     (yet)
+  * [Day 2](./elm/day_2) - [notes](./elm/day_2/notes.md) only. We went
+    off book for this chapter because the book covered remvoed features
+    of Elm so while I did read and make notes on the book as well as the
+    alternate reading material, I didn't bother with the book exercises.
