@@ -27,3 +27,6 @@ in seven weeks](https://pragprog.com/book/7lang/seven-more-languages-in-seven-we
   * [Day 3](./elm/day_3) - [notes](./elm/day_3/notes.md) only. As with
     Day 2, we went off book.  These notes are on the book, but I didn't
     do the exercises.
+* Elixir
+  * [Day 1](./elixir/day_1) - [notes](./elixir/day_1/notes.md) and scratch pad
+    files form working through the text.
