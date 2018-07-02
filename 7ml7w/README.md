@@ -30,3 +30,8 @@ in seven weeks](https://pragprog.com/book/7lang/seven-more-languages-in-seven-we
 * Elixir
   * [Day 1](./elixir/day_1) - [notes](./elixir/day_1/notes.md) and scratch pad
     files form working through the text.
+  * [Day 2](./elixir/day_2) - [notes](./elixir/day_2/notes.md) and
+    implementation required by the chapter, no exercies.
+  * [Day 3](./elixir/day_3) - [notes](./elixir/day_3/notes.md) and
+    implementation required by the chapter (including duplication of required
+    parts from day 2), no exercies.
