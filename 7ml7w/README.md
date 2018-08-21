@@ -40,3 +40,11 @@ in seven weeks](https://pragprog.com/book/7lang/seven-more-languages-in-seven-we
   * [Day 2](./julia/day_2) - [notes](./julia/day_2/notes.md) only so far.
   * [Day 3](./julia/day_3) - [notes](./julia/day_3/notes.md) and the example
     image codec code (updated for modern Julia and Images.jl), but no exercises.
+6. miniKanren
+  * [Day 1](./minikanren/day_1) - [notes](./minikanren/day_1/notes.md) which
+    includes answers to some of the exercises and a
+    [scratchpad](./minikanren/day_1/scratchpad.clj) of code.
+  * [Day 2](./minikanren/day_2) - [notes](./minikanren/day_2/notes.md) which
+    includes answers to some of the exercises.
+  * [Day 3](./minikanren/day_3) - [notes](./minikanren/day_3/notes.md) only so
+    far.
